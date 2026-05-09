@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
 
 // register controller 
 
@@ -54,22 +55,30 @@ export const registerController = async (req, res, supabase) => {
 
         // Create role-specific profile 
         if (role === "patient") {
-            await supabase.from("patient_profiles").insert([
+            const { data: patientProfile, error: patientProfileError } = await supabase.from("patient_profiles").insert([
                 {
                     user_id: newUser.id
                 }
-            ])
-        } else if (role === "doctor") {
-            await supabase.from("doctor_profiles").insert([
-                {
+            ]).select().single()
 
+            if (patientProfileError) {
+                return res.status(400).json({ message: patientProfileError.message });
+            }
+        } else if (role === "doctor") {
+            const { data: doctorProfile, error: doctorProfileError } = await supabase.from("doctor_profiles").insert([
+                {
                     user_id: newUser.id,
                     license_number: `LIC-${Date.now()}`,
-                    specialization_id: '00000000-0000-0000-0000-000000000000', // Default specialization
+                    // specialization_id: '00000000-0000-0000-0000-000000000000', // Default specialization
 
                 }
-            ])
+            ]).select().single()
+
+            if (doctorProfileError) {
+                return res.status(400).json({ message: doctorProfileError.message });
+            }
         }
+
 
         const { password_hash, ...newUserWithoutPassword } = newUser
         res.status(201).json({
@@ -80,5 +89,85 @@ export const registerController = async (req, res, supabase) => {
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ message: 'Registration failed' });
+    }
+}
+
+
+// login controller 
+
+export const loginController = async (req, res, supabase) => {
+    try {
+        const { email, password } = req.body
+        if (!email || !password) {
+            return res.status(400).json({
+                message: "Email and password are required"
+            })
+        }
+
+        // get the user from database 
+
+        const { data: users, error: userError } =
+            await supabase
+                .from("users")
+                .select("*")
+                .eq("email", email)
+                .single()
+
+        if (userError || !users) {
+            return res.status(401).json({
+                message: "Invalid credentials"
+            })
+        }
+
+
+        // compare the password 
+
+        const isPasswordCorrect = await bcrypt.compare(password, users.password_hash)
+
+        if (!isPasswordCorrect) {
+            return res.status(401).json({
+                message: "Invalid password credentials"
+            })
+        }
+
+        // create access token
+        const accessToken = jwt.sign(
+            {
+                id: users.id,
+                email: users.email,
+                role: users.role,
+            },
+            process.env.JWT_SECRET,
+        );
+
+
+        // update last login 
+
+        const { error } = await supabase
+            .from("users")
+            .update({
+                last_login: new Date().toISOString()
+            })
+            .eq("id", users.id)
+
+
+        if (error) {
+            return res.status(400).json({ message: 'Error while updating the last login' });
+        }
+
+        // Return User without password 
+        const { password_hash, ...userWithoutPassword } = users
+
+
+        res.json({
+            user: userWithoutPassword,
+            token: accessToken,
+            message: "Login Successfull"
+        })
+    } catch (error) {
+        console.error("Login error: ", error)
+        res.status(500).json({
+            message: "Login failed"
+        })
     }
 }
