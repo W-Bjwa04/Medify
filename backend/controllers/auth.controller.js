@@ -52,10 +52,33 @@ export const registerController = async (req, res, supabase) => {
             return res.status(400).json({ message: error.message });
         }
 
+        // Create role-specific profile 
+        if (role === "patient") {
+            await supabase.from("patient_profiles").insert([
+                {
+                    user_id: newUser.id
+                }
+            ])
+        } else if (role === "doctor") {
+            await supabase.from("doctor_profiles").insert([
+                {
 
+                    user_id: newUser.id,
+                    license_number: `LIC-${Date.now()}`,
+                    specialization_id: '00000000-0000-0000-0000-000000000000', // Default specialization
 
+                }
+            ])
+        }
+
+        const { password_hash, ...newUserWithoutPassword } = newUser
+        res.status(201).json({
+            user: newUserWithoutPassword,
+            message: "Registration Successfull"
+        })
 
     } catch (error) {
-
+        console.error('Registration error:', error);
+        res.status(500).json({ message: 'Registration failed' });
     }
 }

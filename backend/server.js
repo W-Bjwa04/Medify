@@ -15,9 +15,20 @@ app.use(express.json())
 // Initialize Supabase Client
 
 const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
 )
+
+
+// Import routes 
+
+import authRoutes from "./routes/auth.route.js"
+
+
+
+// Auth Routes 
+app.use("/api/auth", authRoutes(supabase))
+
 
 
 // Health check endpoint
