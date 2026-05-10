@@ -5,7 +5,7 @@ import { getSession } from "next-auth/react"
 // Axios instance — Base URL from env, defaults to http://localhost:5000/api
 
 const axiosInstance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api",
+    baseURL: "http://localhost:3001/api",
     headers: {
         "Content-Type": "application/json",
     },

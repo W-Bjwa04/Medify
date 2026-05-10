@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import { auth } from "@/auth";
+import { Toaster } from '@/components/ui/sonner'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,20 +19,20 @@ export const metadata: Metadata = {
   description: "Book appointments with qualified doctors, manage your health records, and take control of your health",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SessionProvider session={session}>
+        <SessionProvider>
           {children}
+          <Toaster richColors position="top-right" />
         </SessionProvider>
 
       </body>

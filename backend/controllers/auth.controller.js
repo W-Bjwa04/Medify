@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken"
 
 export const registerController = async (req, res, supabase) => {
     try {
+
         const { email, password, first_name, last_name, role = "patient" } = req.body
 
         if (!email || !password || !first_name || !last_name) {
@@ -13,8 +14,8 @@ export const registerController = async (req, res, supabase) => {
                 message: "All fields are required"
             })
         }
-
-        // Check if users already exits 
+        
+       
         const { data: existingUser } = await supabase
             .from("users")
             .select("id")
@@ -26,6 +27,8 @@ export const registerController = async (req, res, supabase) => {
                 message: "User already exits"
             })
         }
+
+        
 
         // Hash Password 
         const hashedPassword = await bcrypt.hash(password, 10)
@@ -48,6 +51,7 @@ export const registerController = async (req, res, supabase) => {
             .select()
             .single(
         )
+
 
         if (error) {
             return res.status(400).json({ message: error.message });
@@ -81,6 +85,8 @@ export const registerController = async (req, res, supabase) => {
 
 
         const { password_hash, ...newUserWithoutPassword } = newUser
+
+
         res.status(201).json({
             user: newUserWithoutPassword,
             message: "Registration Successfull"

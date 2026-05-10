@@ -7,8 +7,26 @@ import GitHubProvider from "next-auth/providers/github"
 
 
 const BACKEND_URL = process.env.NEXT_BACKEND_URL || "http://localhost:5000/api"
+const AUTH_SECRETS = [
+    process.env.AUTH_SECRET,
+    process.env.NEXTAUTH_SECRET,
+    process.env.JWT_SECRET,
+    "dev-auth-secret-change-me",
+].filter(Boolean) as string[]
 
 export const authOptions: NextAuthConfig = {
+    secret: AUTH_SECRETS,
+    cookies: {
+        sessionToken: {
+            name: "authjs.session-token.v2",
+            options: {
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/",
+                secure: process.env.NODE_ENV === "production",
+            },
+        },
+    },
     pages: {
         signIn: "/auth/login",
         error: "/auth/error"

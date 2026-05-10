@@ -4,7 +4,8 @@ import { z } from "zod"
 
 export const registerSchema = z
     .object({
-        name: z.string().min(2, "Name must be at least 2 characters"),
+        first_name: z.string().min(2, "First name must be at least 2 characters"),
+        last_name: z.string().min(2, "Last name must be at least 2 characters"),
         email: z.string().email("Invalid email address"),
         password: z
             .string()
@@ -41,6 +42,15 @@ export const registerSchema = z
     )
 
 
+export const loginSchema = z.object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(8, "Password must be atleast 8 characters")
+})
+
+
+
 // Type Exports 
 
 export type RegisterFormData = z.infer<typeof registerSchema>
+
+export type LoginFormData = z.infer<typeof loginSchema>

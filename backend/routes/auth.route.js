@@ -5,15 +5,17 @@ const authRoutes = (supabase) => {
     const router = express.Router()
 
     // Register Route 
-    router.post("/register", (req, res) => (
+    router.post("/register", (req, res) => {
+        console.log("Register Route Hit")
         registerController(req, res, supabase)
-    ))
+    })
 
     // Login Route 
 
-    router.post("/login", (req, res) => (
+    router.post("/login", (req, res) => {
+        console.log("Login Route Hit")
         loginController(req, res, supabase)
-    ))
+    })
 
     return router
 }
