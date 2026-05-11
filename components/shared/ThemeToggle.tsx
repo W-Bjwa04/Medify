@@ -15,10 +15,15 @@ export function ThemeToggle() {
             aria-label="Toggle Theme"
             className="hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
         >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all 
-            dark:-rotate-90 dark:scale-0
-            "/>
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            {theme === "dark" ? (
+                <Sun
+                    className="h-5 w-5 text-yellow-400 transition-all duration-300 hover:rotate-180"
+                />
+            ) : (
+                <Moon
+                    className="h-5 w-5 text-blue-400 transition-all duration-300 hover:scale-110"
+                />
+            )}
         </Button>
     )
 }

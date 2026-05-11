@@ -6,7 +6,7 @@ import { NavigationMenu } from "@/components/ui/navigation-menu"
 import { NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@radix-ui/react-navigation-menu"
 import { ThemeToggle } from "@/components/shared/ThemeToggle"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 
 
@@ -76,33 +76,45 @@ const LandingPage = () => {
             >
               <ThemeToggle />
               <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-72">
-                  <nav className="flex flex-col gap-4 mt-8">
-                    {
-                      navLinks.map((item) => (
-                        <Link key={item.label} href={item.href} className="text-lg font-medium hover:text-primary transition-colors"> {item.label}
-                        </Link>
-                      ))
-                    }
-                    <Separator />
-                    <Link href="/auth/login">
-                      <Button className="w-full">
-                        Login
-                      </Button>
-                    </Link>
-                    <Link href="/auth/register">
-                      <Button className="w-full">
-                        Get Started
-                      </Button>
-                    </Link>
-                  </nav>
-                </SheetContent>
-              </Sheet>
+  <SheetTrigger asChild>
+    <Button variant="ghost" size="icon" aria-label="Open Menu">
+      <Menu className="h-5 w-5" />
+    </Button>
+  </SheetTrigger>
+
+  <SheetContent side="right" className="w-72" aria-label="Navigation Menu">
+    
+    <SheetHeader>
+      <SheetTitle>Menu</SheetTitle>
+    </SheetHeader>
+
+    <nav className="flex flex-col gap-4 mt-8">
+      {navLinks.map((item) => (
+        <Link
+          key={item.label}
+          href={item.href}
+          className="text-lg font-medium hover:text-primary transition-colors"
+        >
+          {item.label}
+        </Link>
+      ))}
+
+      <Separator />
+
+      <Link href="/auth/login">
+        <Button className="w-full">
+          Login
+        </Button>
+      </Link>
+
+      <Link href="/auth/register">
+        <Button className="w-full">
+          Get Started
+        </Button>
+      </Link>
+    </nav>
+  </SheetContent>
+</Sheet>
 
             </div>
 

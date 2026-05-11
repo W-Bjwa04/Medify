@@ -33,7 +33,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <SessionProvider>
-          <ThemeProvider>
+          <ThemeProvider
+           attribute="class"
+      defaultTheme="system"
+      enableSystem>
             {children}
             <Toaster richColors position="top-right" />
           </ThemeProvider>
