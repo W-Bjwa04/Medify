@@ -6,7 +6,7 @@ import GitHubProvider from "next-auth/providers/github"
 
 
 
-const BACKEND_URL = process.env.NEXT_BACKEND_URL || "http://localhost:5000/api"
+const BACKEND_URL = process.env.NEXT_BACKEND_URL || "http://localhost:3001/api"
 const AUTH_SECRETS = [
     process.env.AUTH_SECRET,
     process.env.NEXTAUTH_SECRET,

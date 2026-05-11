@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  
+  allowedDevOrigins: ['172.20.15.150'],
   productionBrowserSourceMaps: false,
   turbopack: {},
   onDemandEntries: {

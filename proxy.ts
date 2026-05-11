@@ -12,9 +12,9 @@ export default auth((req) => {
   // Redirect logged-in users away from the home/login page to their dashboard
   if (session && (pathname === "/" || pathname.startsWith("/auth"))) {
     const role = (session.user as any)?.role;
-    if (role === "patient") return NextResponse.redirect(new URL("/patient/dashboard", req.url));
-    if (role === "doctor") return NextResponse.redirect(new URL("/doctor/dashboard", req.url));
-    if (role === "admin") return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+    if (role === "patient") return NextResponse.redirect(new URL("/", req.url));
+    if (role === "doctor") return NextResponse.redirect(new URL("/", req.url));
+    if (role === "admin") return NextResponse.redirect(new URL("/", req.url));
   }
 
   // Redirect unauthenticated users away from protected routes
@@ -26,15 +26,15 @@ export default auth((req) => {
 
   // Role-based access control for authenticated users
   if (pathname.startsWith("/patient") && role !== "patient") {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (pathname.startsWith("/doctor") && role !== "doctor") {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (pathname.startsWith("/admin") && role !== "admin") {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 });
 
