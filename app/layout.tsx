@@ -31,12 +31,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <SessionProvider>
           <ThemeProvider
-           attribute="class"
-      defaultTheme="system"
-      enableSystem>
+            attribute="class"
+            defaultTheme="system"
+            enableSystem>
             {children}
             <Toaster richColors position="top-right" />
           </ThemeProvider>
