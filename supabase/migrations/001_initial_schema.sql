@@ -35,8 +35,10 @@ CREATE TABLE patient_profiles (
   blood_group VARCHAR(5),
   allergies TEXT,
   medical_history TEXT,
+  chronic_conditions TEXT,
   emergency_contact_name VARCHAR(255),
   emergency_contact_phone VARCHAR(20),
+  address TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -62,6 +64,19 @@ CREATE TABLE doctor_profiles (
   available_end_time TIME,
   available_days VARCHAR(255), -- JSON array of days (0-6) when available
   is_available BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Medical records table
+CREATE TABLE medical_records (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  patient_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
+  document_type VARCHAR(100),
+  document_url TEXT,
+  notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

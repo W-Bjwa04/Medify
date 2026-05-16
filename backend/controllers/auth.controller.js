@@ -14,8 +14,8 @@ export const registerController = async (req, res, supabase) => {
                 message: "All fields are required"
             })
         }
-        
-       
+
+
         const { data: existingUser } = await supabase
             .from("users")
             .select("id")
@@ -28,7 +28,7 @@ export const registerController = async (req, res, supabase) => {
             })
         }
 
-        
+
 
         // Hash Password 
         const hashedPassword = await bcrypt.hash(password, 10)
@@ -110,6 +110,9 @@ export const loginController = async (req, res, supabase) => {
             })
         }
 
+        console.log(email, password)
+
+
         // get the user from database 
 
         const { data: users, error: userError } =
@@ -121,11 +124,12 @@ export const loginController = async (req, res, supabase) => {
 
         if (userError || !users) {
             return res.status(401).json({
-                message: "Invalid credentials"
+                message: "Invalid credentials", 
+                error:userError
             })
         }
 
-
+   
         // compare the password 
 
         const isPasswordCorrect = await bcrypt.compare(password, users.password_hash)
@@ -174,6 +178,73 @@ export const loginController = async (req, res, supabase) => {
         console.error("Login error: ", error)
         res.status(500).json({
             message: "Login failed"
+        })
+    }
+}
+
+// change password 
+
+export const changePasswordController = async (req, res, supabase) => {
+    try {
+
+        const loggedInUser = req.user
+        console.log(loggedInUser)
+        const { old_password, new_password } = req.body
+
+        if (!old_password || !new_password) {
+            return res.status(400).json({
+                message: "Both old and new passwords are required"
+            })
+        }
+
+        // get password hash
+        const { data: user, error } = await supabase
+            .from("users")
+            .select("password_hash")
+            .eq("id", loggedInUser.id)
+            .single()
+
+        if (error || !user) {
+            return res.status(400).json({
+                message: "User not found"
+            })
+        }
+
+        
+        const isPasswordValid = await bcrypt.compare(
+            old_password,
+            user.password_hash
+        )
+
+        if (!isPasswordValid) {
+            return res.status(400).json({
+                message: "Incorrect password"
+            })
+        }
+
+        const newHashedPassword = await bcrypt.hash(new_password, 10)
+
+        
+        const { error: changePasswordError } = await supabase
+            .from("users")
+            .update({ password_hash: newHashedPassword })
+            .eq("id", loggedInUser.id)
+
+        if (changePasswordError) {
+            return res.status(400).json({
+                message: "Error while changing password"
+            })
+        }
+
+        return res.status(200).json({
+            message: "Password changed successfully"
+        })
+
+    } catch (error) {
+        console.error("Change Password error:", error)
+
+        return res.status(500).json({
+            message: "Change password failed"
         })
     }
 }

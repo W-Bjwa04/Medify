@@ -1,5 +1,6 @@
 import express from "express"
-import { loginController, registerController } from "../controllers/auth.controller.js"
+import { changePasswordController, loginController, registerController } from "../controllers/auth.controller.js"
+import { checkAuth } from "../middlewares/checkAuth.js"
 
 const authRoutes = (supabase) => {
     const router = express.Router()
@@ -15,6 +16,12 @@ const authRoutes = (supabase) => {
     router.post("/login", (req, res) => {
         console.log("Login Route Hit")
         loginController(req, res, supabase)
+    })
+
+    //Change Password
+    router.post("/change-password", checkAuth, (req, res) => {
+        console.log("Change Password Route Hit")
+        changePasswordController(req, res, supabase)
     })
 
     return router

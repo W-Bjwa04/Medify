@@ -23,12 +23,14 @@ const supabase = createClient(
 // Import routes 
 
 import authRoutes from "./routes/auth.route.js"
+import patientRoutes from "./routes/patient.routes.js"
 
 
 
 // Auth Routes 
 app.use("/api/auth", authRoutes(supabase))
-
+// Patient Routes 
+app.use("/api/patients", patientRoutes(supabase))
 
 
 // Health check endpoint
